@@ -3,7 +3,7 @@
 # Generate crontab
 echo "$CRON_SCHEDULE /app/ipam-mac-scanner.sh >> /var/log/cron.log 2>&1" > /etc/crontabs/root
 
-if [ "$RUN_AT_STARTUP" ]; then
+if [ "$RUN_AT_STARTUP" = "true" ]; then
     /bin/bash /app/ipam-mac-scanner.sh
 fi
 
