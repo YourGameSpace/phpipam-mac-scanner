@@ -1,4 +1,4 @@
-<center><h1>phpIPAM MAC Scanner</h1></center>
+# phpIPAM MAC Scanner
 <p align="center">
     <a href="https://deepwiki.com/YourGameSpace/phpipam-mac-scanner">
 	    <img src="https://devin.ai/assets/askdeepwiki.png">
