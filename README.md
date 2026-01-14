@@ -82,7 +82,7 @@ Create a `docker-compose.yml` file with the following content:
 ```yaml
 services:
   phpipam-mac-scanner:
-    image: ghcr.io/yourgamespace/phpipam-mac-scanner:1.0.1
+    image: ghcr.io/yourgamespace/phpipam-mac-scanner:1.0.2
     container_name: phpipam-mac-scanner
     restart: unless-stopped
     network_mode: "host" # Use host networking for arping to work correctly
@@ -117,7 +117,7 @@ docker run -d \
   -e INTERFACE="eth0" \
   -e CRON_SCHEDULE="*/30 * * * *" \
   -e RUN_AT_STARTUP="true" \
-  ghcr.io/yourgamespace/phpipam-mac-scanner:1.0.1
+  ghcr.io/yourgamespace/phpipam-mac-scanner:1.0.2
 ```
 
 ### Standalone Script
@@ -136,7 +136,7 @@ apt update -y && apt install curl arping jq iproute2 bash -y
 Simply pull the new image and start the container again:
 
 ```bash
-docker pull ghcr.io/yourgamespace/phpipam-mac-scanner:1.0.1
+docker pull ghcr.io/yourgamespace/phpipam-mac-scanner:1.0.2
 docker-compose up -d
 ```
 
@@ -144,7 +144,7 @@ docker-compose up -d
 
 To update to the latest version, pull the new image and recreate the container:
 ```bash
-docker pull ghcr.io/yourgamespace/phpipam-mac-scanner:1.0.1
+docker pull ghcr.io/yourgamespace/phpipam-mac-scanner:1.0.2
 docker run -d ... # (same command as above)
 ```
 

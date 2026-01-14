@@ -1,5 +1,7 @@
 #!/bin/sh
 
+echo "[INFO] Starting ipam-mac-scanner v1.0.2 ..."
+
 # Generate crontab
 echo "$CRON_SCHEDULE /app/ipam-mac-scanner.sh >> /var/log/cron.log 2>&1" > /etc/crontabs/root
 
