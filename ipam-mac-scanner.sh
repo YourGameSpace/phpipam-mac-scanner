@@ -62,7 +62,7 @@ update_address() {
     if [ ${no_update} -eq 1 ]; then return; fi
 
     local ip_mac
-    ip_mac=$(echo ${json_data} | jq --raw-output .data.mac)
+    ip_mac=$(echo "${json_data}" | jq --raw-output .data.mac)
     if [ -z "${ip_mac}" ]; then
         echo "[INFO] First MAC-Address for ${ip} found: ${mac}"
     fi
@@ -87,7 +87,7 @@ update_address() {
 }
 
 echo "[INFO] Updating subnet ${SUBNET} ... (this may take a while)"
-network=$(echo ${SUBNET} | cut -d/ -f1 | sed 's/\.[0-9]*$//')
+network=$(echo "${SUBNET}" | cut -d/ -f1 | sed 's/\.[0-9]*$//')
 for subnet_ip in $(seq 1 254); do
     ip="${network}.${subnet_ip}"
     # Running arping with 1s timeout
@@ -127,8 +127,8 @@ if ! json_data=$(curl -X DELETE --header "token: ${token}" "${API_URL}/${API_APP
     echo "[FAIL] Error while trying to remove token" 1>&2
     exit 1
 fi
-result_response=$(echo ${json_data} | jq --raw-output .success)
-if [ "${RESULT}" != "true" ]; then
+result_response=$(echo "${json_data}" | jq --raw-output .success)
+if [ "${result_response}" != "true" ]; then
     echo "[FAIL] Error while trying to remove token: ${json_data}"
     exit 1
 fi
