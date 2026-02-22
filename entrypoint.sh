@@ -1,13 +1,8 @@
 #!/bin/sh
 
-echo "[INFO] Starting ipam-mac-scanner v1.0.2 ..."
+echo "[INFO] Starting ipam-mac-scanner v1.0.3 ..."
 
-# Generate crontab
-echo "$CRON_SCHEDULE /app/ipam-mac-scanner.sh >> /var/log/cron.log 2>&1" > /etc/crontabs/root
-
-if [ "$RUN_AT_STARTUP" = "true" ]; then
+while true; do
     /bin/bash /app/ipam-mac-scanner.sh
-fi
-
-# Start cronjob
-crond -f -l 8
+    sleep $((SCAN_INTERVAL * 60))
+done

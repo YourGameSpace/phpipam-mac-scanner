@@ -23,12 +23,11 @@ This project comes as a pre-built docker image that automatically discovers and 
 *   Discovers MAC addresses using `arping`
 *   Updates the corresponding IP address entries in phpIPAM with the discovered MAC address
 *   Can be configured to ignore updates for IPs with specific tags (e.g., for statically assigned devices)
-*   Runs on a configurable cron schedule
 *   Updates the MAC address for the scanner's own IP(s) on the local interface
 
 ## How It Works
 
-The container runs a shell script (`ipam-mac-scanner.sh`) based on a cron schedule.
+The container runs a shell script (`ipam-mac-scanner.sh`) that performs the scanning and updating process.
 
 The script performs the following steps:
 1.  **Authentication:** It authenticates with the phpIPAM API using the provided `USERNAME` and `PASSWORD` to obtain a temporary API token.
@@ -82,7 +81,7 @@ Create a `docker-compose.yml` file with the following content:
 ```yaml
 services:
   phpipam-mac-scanner:
-    image: ghcr.io/yourgamespace/phpipam-mac-scanner:1.0.2
+    image: ghcr.io/yourgamespace/phpipam-mac-scanner:1.0.3
     container_name: phpipam-mac-scanner
     restart: unless-stopped
     network_mode: "host" # Use host networking for arping to work correctly
@@ -94,8 +93,7 @@ services:
       - SUBNET=192.168.1.0/24 # Set to the subnet you want to scan
       - INTERFACE=eth0 # Change this to your **host's** interface name
       - IGNORED_TAGS=3,4 # See details [below](https://github.com/YourGameSpace/phpipam-mac-scanner#environment-variables)
-      - CRON_SCHEDULE=*/30 * * * * # Adjust the cron schedule as needed (optional)
-      - RUN_AT_STARTUP=true # Set to true to run the scan at container startup (optional)
+      - SCAN_COOLDOWN=30 # Time in minutes to wait between each scan process (30 is recommended)
 ```
 
 Then, run the container:
@@ -115,9 +113,9 @@ docker run -d \
   -e PASSWORD="your_secret_password" \
   -e SUBNET="192.168.1.0/24" \
   -e INTERFACE="eth0" \
-  -e CRON_SCHEDULE="*/30 * * * *" \
-  -e RUN_AT_STARTUP="true" \
-  ghcr.io/yourgamespace/phpipam-mac-scanner:1.0.2
+  -e IGNORED_TAGS="3,4" \
+  -e SCAN_COOLDOWN=30 \
+  ghcr.io/yourgamespace/phpipam-mac-scanner:1.0.3
 ```
 
 ### Standalone Script
@@ -136,7 +134,7 @@ apt update -y && apt install curl arping jq iproute2 bash -y
 Simply pull the new image and start the container again:
 
 ```bash
-docker pull ghcr.io/yourgamespace/phpipam-mac-scanner:1.0.2
+docker pull ghcr.io/yourgamespace/phpipam-mac-scanner:1.0.3
 docker-compose up -d
 ```
 
@@ -144,7 +142,7 @@ docker-compose up -d
 
 To update to the latest version, pull the new image and recreate the container:
 ```bash
-docker pull ghcr.io/yourgamespace/phpipam-mac-scanner:1.0.2
+docker pull ghcr.io/yourgamespace/phpipam-mac-scanner:1.0.3
 docker run -d ... # (same command as above)
 ```
 
@@ -159,5 +157,4 @@ docker run -d ... # (same command as above)
 | `SUBNET`         | The subnet to scan in CIDR notation. (e.g., `192.168.1.0/24`)                                                                                                                   | (none)            | **Yes**  |
 | `INTERFACE`      | The network interface inside the container to use for `arping`.                                                                                                                 | `eth0`            | No       |
 | `IGNORED_TAGS`   | A comma-separated list of numeric tag IDs. IPs marked with these tags will not have their MACs updated.<br/>0: Disables this feature, 1: Offline, 2: Used, 3: Reserved, 4: DHCP | `3,4`             | No       |
-| `CRON_SCHEDULE`  | The cron schedule for running the scan script.                                                                                                                                  | `*/30 * * * *`    | No       |
-| `RUN_AT_STARTUP` | If set to `true`, the script will run once at container startup before the cron schedule begins.                                                                                | `false`           | No       |
+| `SCAN_COOLDOWN`  | Time in minutes to wait between each scan process (30 is recommended)                                                                                                                                  | `*/30 * * * *`    | No       |
